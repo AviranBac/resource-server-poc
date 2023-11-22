@@ -1,0 +1,49 @@
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+            allowedHeaders: "*"
+      routes:
+        - id: resource_server_poc
+          uri: http://localhost:8081
+          predicates:
+            - Path=/resource, /resource/**
+          filters:
+            - RewritePath=/resource(?<segment>/?.*), $\{segment}
+        - id: client
+          uri: http://localhost:4200
+          predicates:
+            - Path=/**
+      default-filters:
+        - TokenRelay=
+  security:
+    oauth2:
+      client:
+        registration:
+          okta:
+            redirect-uri: http://localhost:8080/login/oauth2/code/okta
+
+okta:
+  oauth2:
+    post-logout-redirect-uri: http://localhost:8080
+    client-id: ${OKTA_CLIENT_ID}
+    client-secret: ${OKTA_CLIENT_SECRET}
+    scopes: [ "openid", "profile", "email" ]
+    issuer: https://dev-52403713.okta.com/oauth2/seriesSocialNetwork
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["gateway", "health"]
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: TRACE

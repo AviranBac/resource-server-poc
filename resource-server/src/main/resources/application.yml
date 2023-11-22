@@ -1,0 +1,22 @@
+server:
+  port: 8081
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://dev-52403713.okta.com/oauth2/seriesSocialNetwork/v1/keys
+  mvc:
+    log-request-details: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health"]
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: TRACE
