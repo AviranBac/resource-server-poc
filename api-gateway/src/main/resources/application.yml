@@ -13,14 +13,13 @@ spring:
         - id: resource_server_poc
           uri: http://localhost:8081
           predicates:
-            - Path=/resource, /resource/**
-          filters:
-            - RewritePath=/resource(?<segment>/?.*), $\{segment}
+            - Path=/resource/**
         - id: client
           uri: http://localhost:4200
           predicates:
             - Path=/**
       default-filters:
+        # Used for refresh token mechanism (due to being OAuth2 Client) + injecting Authorization header
         - TokenRelay=
   security:
     oauth2:
